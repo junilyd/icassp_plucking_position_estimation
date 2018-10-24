@@ -1,0 +1,12 @@
+\BOOKMARK [1][-]{section.1}{ Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{ String Model}{}% 2
+\BOOKMARK [1][-]{section.3}{ Proposed Method}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{ Inharmonic Pitch Estimation}{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{ String and Fret Classification}{section.3}% 5
+\BOOKMARK [3][-]{subsubsection.3.2.1}{ Training Procedure}{subsection.3.2}% 6
+\BOOKMARK [2][-]{subsection.3.3}{ Plucking Position Estimation}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{ Evaluation}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{ Classification of String and Fret}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.2}{ Plucking Position Estimation}{section.4}% 10
+\BOOKMARK [1][-]{section.5}{ Conclusion}{}% 11
+\BOOKMARK [1][-]{section.6}{ References}{}% 12

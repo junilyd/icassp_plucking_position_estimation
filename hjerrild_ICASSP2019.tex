@@ -264,7 +264,7 @@ where we emphasize that the model $\mathbf{C}$ can be even more physical meaning
 \section{Evaluation} % (fold)
 \label{sec:experiments}
 \vspace{-.6mm}
-The proposed method was evaluated on recorded data (44.1 kHz). The data and MATLAB code can be downloaded from \url{https://tinyurl.com/yc76blld}. %https://tinyurl.com/y7ov86ye}. 
+Some tests have been done to evaluate the proposed plucking position estimator along with the string and fret classifier. We remark that we do not compare to~\cite{barbancho:inharmonicity_tablature,michelson2018_aes},  since the classification uses a continuous estimate of both pitch and inharmonicity estimated with the NLS pitch estimator. As opposed to~\cite{barbancho:inharmonicity_tablature,michelson2018_aes} we test on short 40 ms frames. The NLS estimator have been shown to reach the Cramér-Rao lower bound~\cite{nielsen2017fast}, hence we do not test the pitch estimator accuracy. The proposed method was evaluated on recorded data (44.1 kHz). The data and MATLAB code can be downloaded from \url{https://tinyurl.com/yc76blld}. %VBN: https://tinyurl.com/y7ov86ye}. 
 The data consists of guitar recordings of the electric and acoustic guitar, each labelled with their respective string and fret combination, namely electric Les Paul Firebrand with Elixir Nanoweb (.10-.54) strings and an acoustic Martin DR with SP (.12-.52) strings. The recorded data of each guitar represents 10 line signal recordings of every string and fret combination from the $0$th to $12$th, hence it consists of 10 recordings of 13 frets and 6 strings which resembles 720 recordings.
 For experiments, every recording is segmented from the detected onset time event in to a 40 ms segment. \vspace{-.6mm}
 %

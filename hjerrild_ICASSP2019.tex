@@ -62,10 +62,11 @@ Analysis of musical performances of individual instruments can be used for many 
 
 %The motivation for this work is to understand the factors that influence the sound of well-known guitarists, in order to be able to replicate their sound by extracting the relevant parameters from their recordings. 
 
-It is well-known that the plucking position and pickup position produce a comb-filtering effect in the spectrum of the guitar signal~\cite{fletcher:plucked_strings,fletcher:principles_of_vibration_and_sound} and that stringed instruments are not perfectly harmonic which some of the first theoretical studies on inharmonicity show~\cite{donkin:acoustics,rayleigh:sound}. Shankland and Coltman~\cite{coltShank} showed how inharmonicity is mainly caused by stiffness and deflection, which was elaborated on in~\cite{rossing:science_of_string_instruments}. The well-known piano model of inharmonicity was derived by H. Fletcher in~\cite{fletcher:piano_model} and has been used recently for string classification purposes; the inharmonicity coefficient has been proposed for electric guitar string classification contained in a 48-dimensional feature set~\cite{abesser:automatic_string_detection_ml}, where the inharmonicity coefficient was selected as one of the most discriminative features. A string and fret classification algorithm was proposed~\cite{dittmar:realtime_string_detection}, using a 10
--dimensional feature set and an SVM classifier. Large feature sets are prone to overfitting and rarely contribute to simple and meaningful findings in terms of physical cause and effect relationship. However, Barbancho et al.~\cite{barbancho:inharmonicity_tablature} proposed an inharmonicity and amplitude based method for automatic generation of guitar tablature, where they locate the fundamental frequency using heuristic for finding peaks in the spectrum. Papers that studied the estimation of the plucking event location of the guitar string have used both frequency-domain~\cite{DBLP:conf/icassp/MohamadDH17,traube:pluckin_point_dafx,traube2003extraction} and time-domain~\cite{penttinen2004time} approaches, but only for open strings or by assuming a known pitch or string and fret position. \\
+It is well-known that the plucking position and pickup position produce a comb-filtering effect in the spectrum of the guitar signal~\cite{fletcher:plucked_strings,fletcher:principles_of_vibration_and_sound} and that stringed instruments are not perfectly harmonic which some of the first theoretical studies on inharmonicity show~\cite{donkin:acoustics,rayleigh:sound}. Shankland and Coltman~\cite{coltShank} showed how inharmonicity is mainly caused by stiffness and deflection, which was elaborated on in~\cite{rossing:science_of_string_instruments}. The well-known piano model of inharmonicity was derived by H. Fletcher in~\cite{fletcher:piano_model} and has been used recently for string and fret classification; the inharmonicity coefficient has been proposed for electric guitar string classification contained in a 48-dimensional feature set~\cite{abesser:automatic_string_detection_ml}, where the inharmonicity coefficient was selected as one of the most discriminative features. A string and fret classification algorithm was proposed in~\cite{dittmar:realtime_string_detection}, based on a 10-dimensional feature set and an SVM classifier. Large feature sets are prone to overfitting and rarely contribute to simple and meaningful findings in terms of physical cause and effect relationship. 
+To overcome this problem, Barbancho et al.~\cite{barbancho:inharmonicity_tablature} proposed an inharmonicity and amplitude based method for automatic and accurate generation of guitar tablature; the inharmonicity coefficient was estimated from the guitar signal, assuming that its fundamental frequency was known. The main parameter for classification of string and fret was based on counting the number of partials that follow the piano model, where peak finding in the spectrum was essential. Based on~\cite{barbancho:inharmonicity_tablature}, Michelson et al.~\cite{michelson2018_aes} proposed to classify string and fret by modeling each inharmonicity coefficient as a Gaussian distribution, along with a linear regression model of the inharmonicity trajectory. Both methods~\cite{barbancho:inharmonicity_tablature,michelson2018_aes} operate on multiple segments, each in the order of 100 ms, which makes them unsuitable for high-tempo and real-time applications.
+Papers that studied the estimation of the plucking event location of the guitar string have used both frequency-domain~\cite{DBLP:conf/icassp/MohamadDH17,traube:pluckin_point_dafx,traube2003extraction} and time-domain~\cite{penttinen2004time} approaches, but only for open strings or by assuming a known pitch or string and fret position. \\
 %
-\indent In this paper, we consider the fretted string scenario, hence the estimation of plucking event location and classification of string and fret. Thus, the objective is to extract the location of interactions of both hands of the guitar player when both hands can be arbitrarily located along a string. Generally, the left hand changes the pitch and the right hand activates the string vibration by plucking as shown in Fig.~\ref{fig:guitar_overview}. We do this using a feature set consisting of three physically meaningful parameters that are extracted with a non-linear least squares (NLS) pitch estimator~\cite{nielsen2017fast,multipitch,hansen2018parametric,DBLP:journals/sigpro/ChristensenSJJ08}, which is extended to include inharmonicity.  We use the inharmonic pitch estimates for training a Bayes maximum a posteriori (MAP) classifier of string and fret combinations which requires training data captured from only one fret on each string, such that a guitar player will be able to swiftly train his guitar on the fly.  Finally, the proposed method estimates the plucking position for the fretted string scenario, as opposed to existing work, e.g.,  \cite{traube:pluckin_point_dafx,DBLP:conf/icassp/MohamadDH17}, which was done for open strings only. All this is done on a segment-by-segment basis and using short segments.
+\indent In this paper, we consider the fretted string scenario, hence the estimation of plucking position as well as classification of string and fret. Thus, the objective is to extract the location of interactions of both hands of the guitar player when both hands can be arbitrarily located along a string. Generally, the left hand changes the pitch and the right hand activates the string vibration by plucking as shown in Fig.~\ref{fig:guitar_overview}. We propose a feature set consisting of three physically meaningful parameters that are extracted with a non-linear least squares (NLS) pitch estimator~\cite{nielsen2017fast,multipitch,hansen2018parametric,DBLP:journals/sigpro/ChristensenSJJ08}, which is extended to include inharmonicity. A maximum a posteriori (MAP) string and fret classifier is trained from inharmonicity and pitch estimates, captured from recordings of only one fret per string, such that a guitar player will be able to swiftly train his guitar.  Finally, the proposed method estimates the plucking position for the fretted string scenario, as opposed to existing work, e.g.,  \cite{traube:pluckin_point_dafx,DBLP:conf/icassp/MohamadDH17}, which was done for open strings only. All this is done on a segment-by-segment basis and using short segments.
 %The method is tested on electric and acoustic guitars, recorded for this purpose. % and is available online along with MATLAB code. 
 \begin{figure}[h!]\
   \centering
@@ -279,7 +280,8 @@ True 1   &0  &0  &0  &0  &0  &1560 \cellcolor[gray]{.8} \\
 \end{tabularx}
 %\end{table}%\vspace{-.6mm}
 %
-%\begin{table}%\centering \vspace{-.6mm}
+%\begin{table}%\centering 
+\vspace{6mm}
 \caption{String and fret confusion matrix for the Firebrand electric guitar. The classification errors are shown for each of the 6 strings}
 \label{tbl:str_confusion_firebrand}
 \begin{tabularx}{0.46\textwidth}{@{}l*{7}{c}c@{}}
@@ -298,8 +300,15 @@ True 1   &0  &0  &0  &0                   &0                          &1560 \cel
 \section{Evaluation} % (fold)
 \label{sec:experiments}
 %\vspace{-.6mm}
-To evaluate the proposed plucking position estimator along with the string and fret classifier, some experiments have been conducted as described next. These experiments focus on segment-by-segment estimation and classification using short segments, as this enables high-tempo and real-time applications of the proposed method. Hence, the experiments aim to demonstrate that this is possible. In relation to this, we remark that the state of the art \cite{barbancho:inharmonicity_tablature,michelson2018_aes} operates on multiple segments, each in the order of 100 ms. As the NLS estimator has been shown to reach the Cram{\'e}r-Rao lower bound~\cite{nielsen2017fast}, we do not go into further details about this. The proposed method was evaluated on recorded data (44.1 kHz). The data and MATLAB code is available online\footnote{\url{https://tinyurl.com/yc76blld}}. The data consists of guitar recordings of the electric and acoustic guitar, each labelled with their respective string and fret combination, namely electric Les Paul Firebrand with Elixir Nanoweb (.10-.54) strings and an acoustic Martin DR with SP (.12-.52) strings. The recorded data of each guitar represents 10 line signal recordings of every string and fret combination from the $0$th to $12$th, hence it consists of 10 recordings of 13 frets and 6 strings which resembles 720 recordings. For experiments, every recording is segmented from the detected onset time event in to a 40 ms segment. %\vspace{-.6mm}
-%
+To evaluate the proposed plucking position estimator along with the string and fret classifier, some experiments have been conducted as described next. These experiments focus on segment-by-segment estimation and classification using short segments, as this enables high-tempo and real-time applications of the proposed method. Hence, the experiments aim to demonstrate that this is possible. In relation to this, we remark that the state of the art~\cite{barbancho:inharmonicity_tablature,michelson2018_aes} operates on multiple segments, each in the order of 100 ms. As the NLS estimator has been shown to reach the Cram{\'e}r-Rao lower bound~\cite{nielsen2017fast}, we do not go into further details about this. The proposed method was evaluated on recorded data (44.1 kHz). The data and MATLAB code is available online\footnote{\url{https://tinyurl.com/yc76blld}}. The data consists of guitar recordings of the electric and acoustic guitar, each labelled with their respective string and fret combination, namely electric Les Paul Firebrand with Elixir Nanoweb (.10-.54) strings and an acoustic Martin DR with SP (.12-.52) strings. The recorded data of each guitar represents 10 line signal recordings of every string and fret combination from the $0$th to $12$th, which resembles 720 recordings in total. For experiments, every recording is segmented from the detected onset time event in to a 40 ms segment and we refer to the available code for further implementation details. %\vspace{-.6mm}
+%The    system    analyzes    audio    waveforms    sampled    at
+%44.100 kHz. The signal is windowed using a Hann window of
+%100 ms of duration. When the onset of a note or chord is found,
+%three consecutive windows of length 100 ms are concatenated to
+%apply the procedure described. A fast Fourier transform (FFT)
+%of
+%points is done to the zero-padded signal to calculate the
+%spectrum
 \begin{figure}[t]
   \centering %\vspace{-6mm}
   \centerline{\includegraphics[width=.9\columnwidth]{img/errorRate_vs_frets2.pdf}}%\vspace{-2mm}
@@ -345,42 +354,24 @@ To evaluate the proposed plucking position estimator along with the string and f
 %\vspace{-.6mm}
 The classification of the string and fret is tested on recordings of both guitars. 
 %~\eqref{eq:B_definition} and~\eqref{eq:omega0_fast} are used in a $13$-fold hold out scheme where one model is trained on data one fret and classify the remaining data 12 frets.
-The classifier is trained as described in \ref{sec:proposed_classification_of_string_and_fret} iteratively, such that $13\times12\times6 = 9360$ recordings are classified in total. The resulting confusion matrices in Table.~\ref{tbl:string_confusion_martin} and Table.~\ref{tbl:str_confusion_firebrand} are shown here for the strings, and we observe that the acoustic guitar has a very low error rate while for the electric guitar it is on average $3\%$. The biggest confusion occurs between strings 3 and 4. We have observed that the amplitudes for $m\gg1$ of the acoustic guitar has relatively more energy than the electric guitar, which is related to string material, acoustic qualities and the electrical systems~\cite{fletcher:physics_of_musical_instruments}.  
-The errors for the electric guitar are explored in Fig.~\ref{fig:err_vs_frets}. The lowest error rate would be $1\%$ from the $12$th fret, while it is $5\%$ from training in the $8$th fret. %\vspace{-.6mm}
+The classifier is trained as described in \ref{sec:proposed_classification_of_string_and_fret}, for each fret such that %$13\times12\times6 = 
+$9360$ recordings are classified in total. The resulting confusion matrices in Table.~\ref{tbl:string_confusion_martin} and Table.~\ref{tbl:str_confusion_firebrand} are shown here for the strings, and we observe that the acoustic guitar has a very low error rate while for the electric guitar it is on average $3\%$. The biggest confusion occurs between strings 3 and 4. We have observed that the amplitudes for $m\!\!\gg\!\!1$ of the acoustic guitar has much more energy than the electric guitar, which could explain the difference in accuracy as being related to acoustic qualities of the guitar and pickup~\cite{fletcher:physics_of_musical_instruments}.  
+Fig.~\ref{fig:err_vs_frets} shows that the error rate is in the range from $1\%$ to $5\%$ dependent on the fret used for training the classifier. %\vspace{-.6mm}
 %
 \begin{figure}[t]
 \centering
 \begin{subfigure}
    \includegraphics[width=.89\linewidth]{img/tablature_constant_note8}\vspace{-2mm}
    \caption{String, fret and plucking position estimates with moving plucking position and fixed string/fret for electric guitar.}
-   \label{fig:Ng1} 
+   \label{fig:pluck_position_fixed_tabs} 
 \end{subfigure}
 \vspace{4mm}
 \begin{subfigure}
    \includegraphics[width=.92\linewidth]{img/tablature_constant_note23_LSD}\vspace{-2mm}
    \caption{String, fret and plucking position estimates with moving plucking position and moving string and fret for electric guitar.}
-   \label{fig:Ng2}
+   \label{fig:pluck_position_varied_tabs}
 \end{subfigure}
-
-%\caption[Two numerical solutions]{(a) bla (b) bla bla. 
-%Again, $I=M$ for definiteness and $A=0.7$. (b) As for (a) but over a wider range of 
-%values of $M,I$.}
 \end{figure}
-%
-%\begin{figure}[t]
-%  \centering
-%  \centerline{\includegraphics[width=.9\columnwidth]{img/tablature_constant_note8}}\vspace{-2mm}
-%  \caption{String, fret and plucking position estimates with moving plucking position and fixed %string/fret for electric guitar.}\label{fig:pluck_position_fixed_tabs}
-%\vspace{-.6mm}
-%\end{figure}%\vspace{-.6mm}
-%
-%\begin{figure}[t]
-%  \centering
-%  \centerline{\includegraphics[width=.92\columnwidth]{img/tablature_constant_note23_LSD}}%\vspac%e{-2mm}
-%  \caption{String, fret and plucking position estimates with moving plucking position and moving %string and fret for electric guitar.}\label{fig:pluck_position_varied_tabs}\vspace{-.6mm}
-%\end{figure} \vspace{-.8mm}
-%
-%\vspace{-.6mm}
 %
 %
 % ----- EVALUATION OF PLUCKING ON FRETTED STRING
@@ -388,7 +379,7 @@ The errors for the electric guitar are explored in Fig.~\ref{fig:err_vs_frets}. 
 %
 %\subsection{Plucking Position Estimation} % (fold)
 %\label{sec:string_estimation}
-Finally, the estimation of plucking position is tested on two 12 second recordings of electric guitar that resembles realistic playing with both hands continuously during each recording. Since the ground truth of plucking position is demanding to obtain, the experimental ground truth is based on a continuously moving the plucking event location; monotonously moving it from the bridge and towards the nut of the guitar. The result in Fig.~\ref{fig:pluck_position_varied_tabs} represents a case where 6 strings are being played in six frets in a structured manner. All the string and fret combinations was correctly extracted, except from one missing at the given onset events and the plucking position estimates shows a clear trend that follows the ground truth direction. In Fig.~\ref{fig:pluck_position_fixed_tabs} similar results are shown for a fixed string and fret combination, where we can observe a clear trend in plucking position direction and it is interesting that spatial aliasing occurs from 7 seconds and on-wards. %\vspace{-.6mm}
+Finally, the estimation of plucking position is tested on two 12 second recordings of electric guitar that resembles realistic playing with sudden changes of string, fret and plucking position. Since the ground truth of plucking position is demanding to obtain, the experimental ground truth is based on a continuously moving the plucking position from the bridge and towards the nut of the guitar. The result in Fig.~\ref{fig:pluck_position_varied_tabs} represents a case where 6 strings are being played in six frets in a structured manner. All the string and fret combinations was correctly extracted, except from one missing at a missing onset event and the plucking position estimates shows a clear trend that follows the ground truth direction. In Fig.~\ref{fig:pluck_position_fixed_tabs} similar results are shown for a fixed string and fret combination, where we can observe a clear trend in plucking position direction and it is interesting that spatial aliasing occurs from 7 seconds and on-wards. %\vspace{-.6mm}
 %
 %
 %
@@ -399,13 +390,17 @@ Finally, the estimation of plucking position is tested on two 12 second recordin
 \section{Conclusion} 
 \label{sec:conclusion}
 %\vspace{-.6mm}
-In this paper a fast method for estimation of guitar string, fret and plucking position was proposed. The proposed method works on very short guitar recording segments (i.e., 40 ms), which makes it suitable for high-tempo and real-time applications. The method is based on a parametric pitch estimator which includes inharmonicity, to effectively estimate the parameters of interest, as shown through the evaluation on both electric and acoustic guitar recordings.
+In this paper a fast method for estimation of guitar string, fret and plucking position was proposed. The method works on very short segments (i.e., 40 ms) from which a parametric pitch estimator extracts the feature set, i.e., pitch, inharmonicity and complex amplitudes. This feature set was proved sufficient for accurate MAP classification of string and fret, even with very little training data captured from only one fret per string, with an overall error rate of $1.5\%$ for electric and acoustic guitar recordings.
 %
-%In this paper a fast method was proposed for estimating the plucking position which includes estimation of the activated string and fret from short segments of audio. 
-The plucking position estimator is the minimizer of the log spectral distance between the estimated amplitudes of the observed signal and the plucking model; it is evaluated in proof-of-concept experiments that show that
-string, fret and plucking position combinations can be estimated accurately.
-%where a clear trend was demonstrated for correct plucking position as well as string and fret combinations. The feature set of the classifier is directly based on non linear least squares pitch estimation, extended to include inharmonicity; derived from a physically meaningful model. 
-The MAP string and fret classifier requires training data captured from one fret per string and was tested on data captured from the remaining frets, iteratively. The classifier performs well with an overall average error rate of $1.5\%$, while the error rate varies depending on the fret used for training. The proposed method is derived from a physically meaningful model. For future work, the model parameters of the classifier could be based directly on physical properties such as guitar string core and wrapping material and dimensions, obtained through simulation.%to include pickup location in the model and the
+%where a clear trend was demonstrated for correct plucking position as well as string and fret combinations. 
+%derived from a physically meaningful model. 
+%
+%Second,, something that is important due to the high number of classes
+%formed by combinations of strings and fret
+%
+The plucking position estimator is the minimizer of the log spectral distance between the estimated amplitudes of the observed signal and the plucking model. In proof-of-concept experiments we showed that
+string, fret and plucking position combinations can be estimated accurately from recording signals with sudden changes  of string, fret and plucking positions.
+%The proposed method is derived from a physically meaningful model and for future work, we would like to model the parameters of the classifier could be based directly on physical properties such as guitar string core and wrapping material and dimensions, obtained through simulation.
 %
 %In this paper a fast yet effective method is proposed for analyzing guitar performances. Specifically, the activated string and fret as well as the location of the plucking event along the guitar string are extracted from guitar signal recordings. The method is based on a parametric pitch estimator and is derived from a physically meaningful model that includes inharmonicity. A maximum a posteriori classifier, which requires training data captured from only one fret per string. The classifier is tested on recordings of electric and acoustic guitar and performs well: the average absolute error of string and fret classification is $1.5\%$, while the error rate varies depending on the fret used for training. The plucking position estimator is the minimizer of the log spectral distance between the amplitudes of the observed signal and the plucking model and it is evaluated in proof-of-concept experiments that show that string, fret and plucking position combinations can be estimated accurately. Unlike the state of the art, the proposed works on very short segments (i.e., 40 ms), which makes it suitable for high-tempo and real-time applications.
 %

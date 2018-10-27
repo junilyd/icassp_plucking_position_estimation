@@ -85,8 +85,8 @@ figure(10);
 
 text(onsetInSeconds(nn)-0.2,stringEstimate(nn),sprintf('%1.0f',fretEstimate(nn)),'fontsize', 20)
         end
-set(gca,'ytick',[6 5 4 3 2 1])
-yticklabels({'1','2','3','4','5','6'})
+set(gca,'ytick',[1 2 3 4 5 6])
+yticklabels({'6','5','4','3','2','1'})
 ylabel('String Est.'); xlabel('Time [sec]');
 
 

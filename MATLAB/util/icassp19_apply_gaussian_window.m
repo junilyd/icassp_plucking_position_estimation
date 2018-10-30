@@ -10,7 +10,7 @@
 %         x	              :  windowed signal
 %
 % ---------------------------------------------------
-% signal = icassp19_apply_gaussian_window(signal, envelopeSignal)
+% x = icassp19_apply_gaussian_window(x)
 % ---------------------------------------------------
 function x = icassp19_apply_gaussian_window(x,a)
        	Nwin = length(x)-1;

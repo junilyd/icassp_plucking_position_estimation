@@ -1,55 +1,54 @@
 % ----------------------------------------------------------------------
-% Estimation of pitch and string stiffness from using inharmonic summation
+% Estimation of inharmonicity and pithc with inharmonic summation (approx. NLS)
 %
 %   INPUTS:
-%           X:            fft of input signal
-%           pitchInput :  first estimate of pitch (usually from harmonic_summation_tuner())
-%           L:            Number of Harmonics to use.
+%           X:            fft of input signal recording
+%           pitchInital : Initial estimate of pitch (usually with the harmonic assumption)
+%           M:            Number of Harmonics to use.
 %           fs:           Sample rate to use
-%           betaArea :    Searsh area for stiffnessCoeffs 
+%           BSearchGrid : Search grid for inharmonicity coefficient 
 %   OUTPUTS:
-%           pitch:        The pitch estimate
-%   BstiffnessEstimate :  The stiffness coefficients estimate
+%           pitch       : The pitch estimate
+%   BstiffnessEstimate  : The inharmonicity coefficient estimate
 % ------------------------------------------------------------------------------------------------
-% [inharmonicPitch, stiffnessCoeff] = smc_inharmonic_summation_tunerv3(X, f0_area, L, fs,betaArea)
+% [inharmonicPitch, stiffnessCoeff] = icassp19_inharmonic_summation(X, f0_area, L, fs,betaArea)
 % ------------------------------------------------------------------------------------------------
-function [pitchEstimate, BEstimate, costFunction, betaArea, pitchArea] = icassp19_inharmonic_summation(X, pitchInput, M, fs, betaArea, nFFT)
-%pitchInput=pitch(1);
+function [pitchEstimate, BEstimate, costFunction, BSearchGrid, pitchGrid] = icassp19_inharmonic_summation(X, pitchInitial, M, fs, BSearchGrid, nFFT)
 if ~exist('nFFT'), nFFT = 2^19; end
 
-pitchInput = [pitchInput 2*pitchInput];
-pitchWidth = 3*nFFT/2^18*fs/nFFT;% 3 is for the gaussian window%pitchInput(1)-pitchInput(1)*0.995;
+pitchInitial = [pitchInitial 2*pitchInitial];
+pitchWidth = (3+3)*nFFT/2^18*fs/nFFT;% (3+3) is for the gaussian window mainlobe width
 
-for pp = 1:1 % testing lower(1) and upper(2) octave
+for pp = 1:1 % testing lower(1) or also upper(2) octave
     B=1;
-    for beta=betaArea
-        pitchArea = [pitchInput(pp)-pitchWidth:fs/nFFT:pitchInput(pp)+pitchWidth];
-        for pII=1:length(pitchArea)
-            [HL] = icassp19_inharmonic_index(X, fs, M, pitchArea(pII),beta);
+    for BGrid=BSearchGrid
+        pitchGrid = [pitchInitial(pp)-pitchWidth:fs/nFFT:pitchInitial(pp)+pitchWidth];
+        for pII=1:length(pitchGrid)
+            [HL] = icassp19_inharmonic_index(X, fs, M, pitchGrid(pII),BGrid);
             HL(HL>=length(X))=[];
-            costFunction(:,B,pII) = sum(X(HL));% X(HL)'*((1:length(HL))'.^1);
+            costFunction(:,B,pII) = sum(X(HL));
         end
         B=B+1;
     end
     
-    betaAreaSize  = size(costFunction,2);
-    pitchAreaSize = size(costFunction,3);
+    betaGridSize  = size(costFunction,2);
+    pitchGridSize = size(costFunction,3);
     %% CostFunction
     [C(pp) I] = max(costFunction(:));
     
     %% Pitch
-    pitchIndex = ceil(I/betaAreaSize);
-    inharmonicPitchV2(pp) = pitchArea(pitchIndex);
+    pitchIndex = ceil(I/betaGridSize);
+    inharmonicPitch(pp) = pitchGrid(pitchIndex);
 
-    %% Beta
-    BstiffnessIndex = mod(I,betaAreaSize);
-    if BstiffnessIndex == 0, 
-        BstiffnessIndex = betaAreaSize; 
+    %% B
+    BGridIndex = mod(I,betaGridSize);
+    if BGridIndex == 0, 
+        BGridIndex = betaGridSize; 
     end
-    BCandidates(pp) = betaArea(BstiffnessIndex);
+    BCandidates(pp) = BSearchGrid(BGridIndex);
 end
 %% loop end
 [octaveMax octaveMaxIndex] = max(C);
-pitchEstimate = inharmonicPitchV2(octaveMaxIndex);
+pitchEstimate = inharmonicPitch(octaveMaxIndex);
 BEstimate = BCandidates(octaveMaxIndex);
 end

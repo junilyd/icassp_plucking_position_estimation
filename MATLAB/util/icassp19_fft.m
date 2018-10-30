@@ -6,7 +6,7 @@
 % INPUT: 
 %       sig:  signal to analyse
 %       Fs:   sample rate of that signal
-%       N     length of the FFT, which can change the resolution of the plot
+%       N     length of the zeropadded input to the FFT.
 % OUTPUT:
 %       f_axis:     x-axis for plotting
 %       fft_sig:    linear fft signal
@@ -20,11 +20,11 @@
 %         plot(f,fft_dB);
 %         
 % -----------------------------------------------------------
-% function [f_axis, fft_sig, fft_sig_dB] = fft_(sig, Fs, N)    
+% function [f_axis, X, X_dB] = icassp19_fft(sig, Fs, N)    
 % -----------------------------------------------------------
-function [f_axis, fft_sig, fft_sig_dB] = icassp19_fft(sig,Fs,N)    
+function [f_axis, X, X_dB] = icassp19_fft(sig,Fs,N)    
     fft_long = fft(sig,N);
-    fft_sig  = 2*abs(fft_long(1:N/2)).^2;
-    fft_sig_dB = 10*log10(fft_sig);
+    X  = 2*abs(fft_long(1:N/2)).^2;
+    X_dB = 10*log10(X);
     f_axis   = Fs/2 * linspace(0,1,N/2);
 end

@@ -2,26 +2,16 @@
 % Calculate analytic complex signal from real signal   
 %   Calcualates the analytic signal from a real signal into size of next
 %   power of 2 from lenght(sig).
-%   
-%   First the function calculates the zero padded FFT. Next step is to make
-%   a vector, h, with the length of FFT--> NFFT. On first place in the vector 
-%   a 1 is loaded. Also in NFFT/2+1 place a 1 is loaded. 
-%   From h(2):NFFT/2 a 2 is loaded. 
-%   A new vector is made, with same size as the previous h. The vector 
-%   is loaded with the FFT result multiplied the h vector. This means the
-%   last half will be zero and the first part is doubled in magnitude,
-%   which result in same signal magnitude. 
-%   
 %
 %   INPUT: 
 %           sig: real signal
 %   OUTPUT:
 %           x: analytic signal (complex signal)
-% 	    X: FFT signal
-%      f_axis: values for f axis (mostly for ploting cases)
+% 	        X: FFT signal
+%           f_axis: values for f axis (mostly for ploting cases)
 %
 % --------------------
-% x = smc_hilbert(sig)
+% x = icassp19_hilbert_transform(sig,fs)
 % --------------------
 function [x, X, f_axis] = icassp19_hilbert_transform(sig, fs)
 if (~exist('fs')), fs = 44.1e3; end;
